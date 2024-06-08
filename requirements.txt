@@ -1,4 +1,4 @@
 sqlalchemy
 pymysql
 functions-framework==3.0.0
-flask==2.0.2
+flask==2.2.5
