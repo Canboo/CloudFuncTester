@@ -16,8 +16,6 @@ def get_connection():
     )
     return pool
 
-app = Flask(__name__)
-
 @app.route('/')
 def get_dept():
     connection = get_connection()
@@ -26,6 +24,7 @@ def get_dept():
         departments = [{"dept_name": row["dept_name"], "dept_name_eng": row["dept_name_eng"]} for row in result]
         return jsonify(departments)
 
-def main(request):
-    return get_dept()
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
 
