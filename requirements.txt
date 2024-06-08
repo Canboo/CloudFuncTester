@@ -1,1 +1,4 @@
 functions-framework==3.0.0
+sqlalchemy
+pymysql
+flask
