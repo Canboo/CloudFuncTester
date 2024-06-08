@@ -1,22 +1,33 @@
 import os
 import sqlalchemy
 import pymysql
+from google.cloud import secretmanager
 from flask import Flask, jsonify
 
-# 設定資料庫連接資訊
+app = Flask(__name__)
+
+def access_secret_version(secret_id):
+    client = secretmanager.SecretManagerServiceClient()
+    name = f"projects/{os.environ['GCP_PROJECT']}/secrets/{secret_id}/versions/latest"
+    response = client.access_secret_version(request={"name": name})
+    return response.payload.data.decode("UTF-8")
+
 def get_connection():
+    username = access_secret_version("DATABASE_USER")
+    password = access_secret_version("DATABASE_PASSWORD")
+    database = access_secret_version("DATABASE_NAME")
+    host = access_secret_version("INSTANCE_HOST")
+    
     pool = sqlalchemy.create_engine(
         sqlalchemy.engine.url.URL(
             drivername="mysql+pymysql",
-            username=os.environ["DATABASE_USER"],
-            password=os.environ["DATABASE_PASSWORD"],
-            database=os.environ["DATABASE_NAME"],
-            host=os.environ["INSTANCE_HOST"]
+            username=username,
+            password=password,
+            database=database,
+            host=host
         )
     )
     return pool
-
-app = Flask(__name__)
 
 @app.route('/')
 def get_dept():
@@ -26,5 +37,6 @@ def get_dept():
         departments = [{"dept_name": row["dept_name"], "dept_name_eng": row["dept_name_eng"]} for row in result]
         return jsonify(departments)
 
-def hello_world(request):
-    return get_dept()
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
