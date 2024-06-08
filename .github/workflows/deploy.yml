@@ -22,6 +22,9 @@ jobs:
       uses: google-github-actions/setup-gcloud@v2.1.0
       with:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
+        
+    - name: Check gcloud version
+      run: gcloud version
 
     - name: Deploy to Cloud Functions
       run: |
