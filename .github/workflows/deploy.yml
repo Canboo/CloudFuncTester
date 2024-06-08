@@ -21,11 +21,12 @@ jobs:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
     - name: 'Deploy to Cloud Functions'
-      uses: 'google-github-actions/deploy-cloud-functions@v2'
+      uses: 'google-github-actions/deploy-cloud-functions@v3'
       with:
         name: 'hello_world_function'
+        description: '測試'
         region: 'asia-east1'
         runtime: 'python312'
-        memory_mb: '128'
+        cpu: '0.5'
+        memory_mb: '128M'
         entry_point: 'main'
-        https_trigger_security_level: 'secure_always'
