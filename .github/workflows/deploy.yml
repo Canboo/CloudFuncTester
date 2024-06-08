@@ -27,6 +27,4 @@ jobs:
         description: '測試'
         region: 'asia-east1'
         runtime: 'python312'
-        cpu: '0.5'
-        memory: '128M'
         entry_point: 'main'
