@@ -35,4 +35,4 @@ def get_dept():
 
 @functions_framework.http
 def hello_http(request):
-    return get_dept()
+    return get_dept() #return the result of get_dept() function
