@@ -3,7 +3,7 @@ import os
 import sqlalchemy
 from sqlalchemy.sql import text
 import pymysql
-from flask import Flask, jsonify
+from flask import Flask, jsonify, make_response
 
 def get_connection():
     pool = sqlalchemy.create_engine(
@@ -20,11 +20,18 @@ def get_connection():
     return pool
 
 def get_dept():
-    connection = get_connection()
-    with connection.connect() as conn:
-        result = conn.execute(text("SELECT dept_name, dept_name_eng FROM tbl_dept"))
-        departments = [{"dept_name": row.dept_name, "dept_name_eng": row.dept_name_eng} for row in result]
-        return jsonify(departments)
+    try:
+        connection = get_connection()
+    except Exception as e:
+        return make_response(jsonify({"error": "Database connection error"}), 500)
+    
+    try:
+        with connection.connect() as conn:
+            result = conn.execute(text("SELECT dept_name, dept_name_eng FROM tbl_dept"))
+            departments = [{"dept_name": row.dept_name, "dept_name_eng": row.dept_name_eng} for row in result]
+            return jsonify(departments)
+    except Exception as e:
+        return make_response(jsonify({"error": "Database query error"}), 500)
 
 @functions_framework.http
 def hello_http(request):
