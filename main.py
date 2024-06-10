@@ -13,7 +13,7 @@ def get_connection():
             password=os.environ["DATABASE_PASSWORD"],
             database=os.environ["DATABASE_NAME"],
             host=os.environ["INSTANCE_HOST"],
-            port=os.environ["DATABASE_PORT"],
+            port=int(os.environ["DATABASE_PORT"]),
             query={}
         )
     )
@@ -31,7 +31,7 @@ def get_dept():
             departments = [{"dept_name": row.dept_name, "dept_name_eng": row.dept_name_eng} for row in result]
             return jsonify(departments)
     except Exception as e:
-        return make_response(jsonify({"error": "Database query error"}), 500)
+        return make_response(jsonify({"error": f"Database query error: {str(e)}"}), 500)
 
 @functions_framework.http
 def hello_http(request):
